@@ -1,6 +1,6 @@
 #include "Command.h"
 
-namespace Clipp {
+namespace CLI {
 
     bool Command::hasOption(std::string_view name) const {
         for (const Option& option: Options) {

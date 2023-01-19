@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace Clipp {
+namespace CLI {
 
     struct Command {
         std::string_view Name;

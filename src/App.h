@@ -6,7 +6,7 @@
 #include <vector>
 #include <functional>
 
-namespace Clipp {
+namespace CLI {
 
     struct App {
     public:

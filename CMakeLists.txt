@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20.2)
 set(CMAKE_CXX_STANDARD 17)
 
-project(clipp)
+project(cli)
 
 set(SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 set(BIN_DIR ${PROJECT_SOURCE_DIR}/bin)

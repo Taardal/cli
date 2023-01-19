@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace Clipp {
+namespace CLI {
 
     struct Option {
         std::string_view Name;

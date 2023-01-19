@@ -3,7 +3,7 @@
 #include "Command.h"
 #include "Option.h"
 
-namespace Clipp
+namespace CLI
 {
     Option createHelpOption();
 

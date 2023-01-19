@@ -3,7 +3,7 @@
 #include "Help.h"
 #include <sstream>
 
-namespace Clipp {
+namespace CLI {
 
     App::App() : helpCommand(createHelpCommand()), helpOption(createHelpOption()) {
     }

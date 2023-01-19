@@ -2,7 +2,7 @@
 #include "Context.h"
 #include "Option.h"
 
-namespace Clipp {
+namespace CLI {
 
     bool Context::hasOption(std::string_view name) const {
         for (const Option& option: Options) {

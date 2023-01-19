@@ -2,7 +2,7 @@
 #include "App.h"
 #include <sstream>
 
-namespace Clipp {
+namespace CLI {
 
     Option createHelpOption() {
         Option option;
