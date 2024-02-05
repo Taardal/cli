@@ -19,4 +19,18 @@ namespace CLI {
         }
         return nullptr;
     }
+
+    std::string_view Command::getOptionValue(std::string_view name) const {
+        const Option* targetOption = nullptr;
+        for (const Option& option: Options) {
+            if (option.Name == name) {
+                targetOption = &option;
+                break;
+            }
+        }
+        if (targetOption == nullptr) {
+            return "";
+        }
+        return targetOption->getValueOrDefault();
+    }
 }

@@ -17,5 +17,7 @@ namespace CLI {
         bool hasOption(std::string_view name) const;
 
         const Option* getOption(std::string_view name) const;
+
+        std::string_view getOptionValue(std::string_view name) const;
     };
 }

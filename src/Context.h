@@ -6,9 +6,9 @@
 namespace CLI
 {
 
-    class App;
-    class Command;
-    class Option;
+    struct App;
+    struct Command;
+    struct Option;
 
     struct Context
     {
