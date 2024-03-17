@@ -12,13 +12,13 @@ namespace CLI
 
     struct Context
     {
-        const App* App;
-        const Command* Command = nullptr;
-        std::vector<Option> Options;
-        std::vector<std::string_view> Arguments;
+        const App* app;
+        const Command* command = nullptr;
+        std::vector<Option> options;
+        std::vector<std::string> arguments;
 
-        bool hasOption(std::string_view name) const;
+        bool hasOption(const std::string& name) const;
 
-        const Option* getOption(std::string_view name) const;
+        const Option* getOption(const std::string& name) const;
     };
 }

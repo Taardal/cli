@@ -4,18 +4,18 @@
 
 namespace CLI {
 
-    bool Context::hasOption(std::string_view name) const {
-        for (const Option& option: Options) {
-            if (option.Name == name) {
+    bool Context::hasOption(const std::string& name) const {
+        for (const Option& option: options) {
+            if (option.name == name) {
                 return true;
             }
         }
         return false;
     }
 
-    const Option* Context::getOption(std::string_view name) const {
-        for (const Option& option: Options) {
-            if (option.Name == name) {
+    const Option* Context::getOption(const std::string& name) const {
+        for (const Option& option: options) {
+            if (option.name == name) {
                 return &option;
             }
         }

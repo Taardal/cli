@@ -4,20 +4,23 @@
 #include "Option.h"
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace CLI {
 
     struct Command {
-        std::string_view Name;
-        std::string_view Usage;
-        std::vector<std::string_view> Aliases;
-        std::vector<Option> Options;
-        std::function<void(const Context&)> Action;
+        std::string name;
+        std::string usage;
+        std::vector<std::string> aliases;
+        std::vector<Option> options;
+        std::function<void(const Context&)> action;
 
-        bool hasOption(std::string_view name) const;
+        void run(const Context& context) const;
 
-        const Option* getOption(std::string_view name) const;
+        bool hasOption(const std::string& name) const;
 
-        std::string_view getOptionValue(std::string_view name) const;
+        const Option* getOption(const std::string& name) const;
+
+        std::string getOptionValue(const std::string& name) const;
     };
 }

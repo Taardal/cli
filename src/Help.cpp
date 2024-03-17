@@ -6,35 +6,35 @@ namespace CLI {
 
     Option createHelpOption() {
         Option option;
-        option.Name = "help";
-        option.Aliases = {"h"};
-        option.Usage = "Show help";
+        option.name = "help";
+        option.aliases = {"h"};
+        option.usage = "Show help";
         return option;
     }
 
     Command createHelpCommand() {
         Command command;
-        command.Name = "help";
-        command.Usage = "Show available commands and options";
-        command.Aliases = {"h"};
-        command.Action = [](const Context& context) -> void {
-            const App& app = *context.App;
+        command.name = "help";
+        command.usage = "Show available commands and options";
+        command.aliases = {"h"};
+        command.action = [](const Context& context) -> void {
+            const App& app = *context.app;
 
             constexpr int keyLeftPadding = 4;
             constexpr int valueLeftPadding = 4;
 
-            if (context.Command != nullptr) {
-                const Command& command = *context.Command;
+            if (context.command != nullptr) {
+                const Command& command = *context.command;
                 {
                     printf("%s\n", "NAME:");
-                    int keyWidth = keyLeftPadding + command.Name.length();
-                    printf("%*s - %s\n", keyWidth, command.Name.data(), command.Usage.data());
+                    int keyWidth = keyLeftPadding + command.name.length();
+                    printf("%*s - %s\n", keyWidth, command.name.data(), command.usage.data());
                     printf("\n");
                 }
                 {
                     printf("%s\n", "USAGE:");
-                    int keyWidth = keyLeftPadding + command.Name.length();
-                    printf("%*s %s\n", keyWidth, command.Name.data(), "[command options] [arguments...]");
+                    int keyWidth = keyLeftPadding + command.name.length();
+                    printf("%*s %s\n", keyWidth, command.name.data(), "[command options] [arguments...]");
                     printf("\n");
                 }
                 {
@@ -42,10 +42,10 @@ namespace CLI {
                     const char* longFormPrefix = "--";
                     const char* shortFormPrefix = "-";
                     int longestKeyLength = 0;
-                    for (const Option& option: command.Options) {
+                    for (const Option& option: command.options) {
                         std::stringstream ss;
-                        ss << longFormPrefix << option.Name;
-                        for (std::string_view alias: option.Aliases) {
+                        ss << longFormPrefix << option.name;
+                        for (std::string alias: option.aliases) {
                             ss << ", " << shortFormPrefix << alias;
                         }
                         int optionKeyLength = ss.str().length();
@@ -53,20 +53,20 @@ namespace CLI {
                             longestKeyLength = optionKeyLength;
                         }
                     }
-                    for (const Option& option: command.Options) {
+                    for (const Option& option: command.options) {
                         std::stringstream ss;
-                        ss << longFormPrefix << option.Name;
-                        for (std::string_view alias: option.Aliases) {
+                        ss << longFormPrefix << option.name;
+                        for (std::string alias: option.aliases) {
                             ss << ", " << shortFormPrefix << alias;
                         }
                         const std::string& key = ss.str();
                         int keyWidth = keyLeftPadding + key.length();
                         printf("%*s", keyWidth, key.c_str());
 
-                        std::string value = option.Usage.length() > 0 ? std::string(option.Usage) : "";
-                        if (option.DefaultValue.length() > 0) {
+                        std::string value = option.usage.length() > 0 ? std::string(option.usage) : "";
+                        if (option.defaultValue.length() > 0) {
                             std::stringstream ss;
-                            ss << value << " (Default: " << option.DefaultValue << ")";
+                            ss << value << " (Default: " << option.defaultValue << ")";
                             value = ss.str();
                         }
                         int keyRightPadding = longestKeyLength - key.length();
@@ -77,23 +77,23 @@ namespace CLI {
             } else {
                 {
                     printf("%s\n", "NAME:");
-                    int keyWidth = keyLeftPadding + app.Name.length();
-                    printf("%*s - %s\n", keyWidth, app.Name.data(), app.Usage.data());
+                    int keyWidth = keyLeftPadding + app.name.length();
+                    printf("%*s - %s\n", keyWidth, app.name.data(), app.usage.data());
                     printf("\n");
                 }
                 {
                     printf("%s\n", "USAGE:");
-                    int keyWidth = keyLeftPadding + app.Name.length();
-                    printf("%*s %s\n", keyWidth, app.Name.data(), "[global options] command [command options] [arguments...]");
+                    int keyWidth = keyLeftPadding + app.name.length();
+                    printf("%*s %s\n", keyWidth, app.name.data(), "[global options] command [command options] [arguments...]");
                     printf("\n");
                 }
                 {
                     printf("%s\n", "COMMANDS:");
                     int longestKeyLength = 0;
-                    for (const Command& command: app.Commands) {
+                    for (const Command& command: app.commands) {
                         std::stringstream ss;
-                        ss << command.Name;
-                        for (std::string_view alias: command.Aliases) {
+                        ss << command.name;
+                        for (std::string alias: command.aliases) {
                             ss << ", " << alias;
                         }
                         int keyLength = ss.str().length();
@@ -101,17 +101,17 @@ namespace CLI {
                             longestKeyLength = keyLength;
                         }
                     }
-                    for (const Command& command: app.Commands) {
+                    for (const Command& command: app.commands) {
                         std::stringstream ss;
-                        ss << command.Name;
-                        for (std::string_view alias: command.Aliases) {
+                        ss << command.name;
+                        for (std::string alias: command.aliases) {
                             ss << ", " << alias;
                         }
                         const std::string& key = ss.str();
                         int keyWidth = keyLeftPadding + key.length();
                         printf("%*s", keyWidth, key.c_str());
 
-                        std::string_view value = command.Usage;
+                        std::string value = command.usage;
                         int keyRightPadding = longestKeyLength - key.length();
                         int valueWidth = keyRightPadding + valueLeftPadding + value.length();
                         printf("%*s\n", valueWidth, value.data());
@@ -123,10 +123,10 @@ namespace CLI {
                     const char* longFormPrefix = "--";
                     const char* shortFormPrefix = "-";
                     int longestKeyLength = 0;
-                    for (const Option& option: app.Options) {
+                    for (const Option& option: app.options) {
                         std::stringstream ss;
-                        ss << longFormPrefix << option.Name;
-                        for (std::string_view alias: option.Aliases) {
+                        ss << longFormPrefix << option.name;
+                        for (std::string alias: option.aliases) {
                             ss << ", " << shortFormPrefix << alias;
                         }
                         int optionKeyLength = ss.str().length();
@@ -134,20 +134,20 @@ namespace CLI {
                             longestKeyLength = optionKeyLength;
                         }
                     }
-                    for (const Option& option: app.Options) {
+                    for (const Option& option: app.options) {
                         std::stringstream ss;
-                        ss << longFormPrefix << option.Name;
-                        for (std::string_view alias: option.Aliases) {
+                        ss << longFormPrefix << option.name;
+                        for (std::string alias: option.aliases) {
                             ss << ", " << shortFormPrefix << alias;
                         }
                         const std::string& key = ss.str();
                         int keyWidth = keyLeftPadding + key.length();
                         printf("%*s", keyWidth, key.data());
 
-                        std::string value = option.Usage.length() > 0 ? std::string(option.Usage) : "";
-                        if (option.DefaultValue.length() > 0) {
+                        std::string value = option.usage.length() > 0 ? std::string(option.usage) : "";
+                        if (option.defaultValue.length() > 0) {
                             std::stringstream ss;
-                            ss << value << " (Default: " << option.DefaultValue << ")";
+                            ss << value << " (Default: " << option.defaultValue << ")";
                             value = ss.str();
                         }
                         int keyRightPadding = longestKeyLength - key.length();

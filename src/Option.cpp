@@ -2,7 +2,7 @@
 
 namespace CLI {
 
-    std::string_view Option::getValueOrDefault() const {
-        return Value.length() > 0 ? Value : DefaultValue.length() > 0 ? DefaultValue : "";
+    std::string Option::getValueOrDefault() const {
+        return value.length() > 0 ? value : defaultValue.length() > 0 ? defaultValue : "";
     }
 }

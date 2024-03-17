@@ -1,29 +1,32 @@
 #include "Command.h"
 
 namespace CLI {
+    void Command::run(const Context& context) const {
+        action(context);
+    }
 
-    bool Command::hasOption(std::string_view name) const {
-        for (const Option& option: Options) {
-            if (option.Name == name) {
+    bool Command::hasOption(const std::string& name) const {
+        for (const Option& option: options) {
+            if (option.name == name) {
                 return true;
             }
         }
         return false;
     }
 
-    const Option* Command::getOption(std::string_view name) const {
-        for (const Option& option: Options) {
-            if (option.Name == name) {
+    const Option* Command::getOption(const std::string& name) const {
+        for (const Option& option: options) {
+            if (option.name == name) {
                 return &option;
             }
         }
         return nullptr;
     }
 
-    std::string_view Command::getOptionValue(std::string_view name) const {
+    std::string Command::getOptionValue(const std::string& name) const {
         const Option* targetOption = nullptr;
-        for (const Option& option: Options) {
-            if (option.Name == name) {
+        for (const Option& option: options) {
+            if (option.name == name) {
                 targetOption = &option;
                 break;
             }

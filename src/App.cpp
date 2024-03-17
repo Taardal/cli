@@ -8,11 +8,11 @@ namespace CLI {
     App::App() : helpCommand(createHelpCommand()), helpOption(createHelpOption()) {
     }
 
-    void App::Run(int argc, char* argv[]) {
+    void App::run(int argc, char* argv[]) {
         initialize();
 
         Context context;
-        context.App = this;
+        context.app = this;
 
         bool showHelp = false;
 
@@ -23,50 +23,66 @@ namespace CLI {
         }
         bool previousSegmentWasOption = false;
         for (int i = firstSegmentIndex; i < argc; i++) {
-            std::string_view segment(argv[i]);
-            if (!context.Arguments.empty()) {
-                context.Arguments.push_back(segment);
+            std::string segment(argv[i]);
+            if (!context.arguments.empty()) {
+                context.arguments.push_back(segment);
                 continue;
             }
-            Option option = getOption(segment, context.Command);
-            if (!option.Name.empty()) {
+            Option option = getOption(segment, context.command);
+            if (!option.name.empty()) {
                 previousSegmentWasOption = true;
-                context.Options.push_back(option);
-                if (option.Name == helpOption.Name) {
+                context.options.push_back(option);
+                if (option.name == helpOption.name) {
                     showHelp = true;
                 }
             } else if (previousSegmentWasOption) {
                 previousSegmentWasOption = false;
-                context.Options[context.Options.size() - 1].Value = segment;
+                context.options[context.options.size() - 1].value = segment;
             } else {
                 previousSegmentWasOption = false;
                 const Command* command = findCommand(segment);
                 if (command == nullptr) {
-                    context.Arguments.push_back(segment);
+                    context.arguments.push_back(segment);
                     continue;
                 }
-                if (command->Name == helpCommand.Name) {
+                if (command->name == helpCommand.name) {
                     showHelp = true;
                     continue;
                 }
-                context.Command = command;
+                context.command = command;
             }
         }
         if (showHelp) {
-            helpCommand.Action(context);
-        } else if (context.Command != nullptr) {
-            context.Command->Action(context);
+            helpCommand.action(context);
+        } else if (context.command != nullptr) {
+            context.command->action(context);
         } else {
-            Action(context);
+            action(context);
+        }
+    }
+
+    const Command* App::getCommand(const std::string& name) const {
+        for (const Command& command : commands) {
+            if (command.name == name) {
+                return &command;
+            }
+        }
+        return nullptr;
+    }
+
+    void App::runCommand(const std::string& name, const Context& context) const {
+        const Command* command = getCommand(name);
+        if (command != nullptr) {
+            command->run(context);
         }
     }
 
     void App::initialize() {
-        Commands.push_back(helpCommand);
-        Options.push_back(helpOption);
+        commands.push_back(helpCommand);
+        options.push_back(helpOption);
     }
 
-    Option App::getOption(std::string_view segment, const Command* command) const {
+    Option App::getOption(std::string segment, const Command* command) const {
         constexpr int longFormDashCount = 2;
         constexpr int shortFormDashCount = 1;
 
@@ -82,32 +98,32 @@ namespace CLI {
         int dashCount = longForm ? longFormDashCount : shortFormDashCount;
         int equalSignIndex = (int) segment.find('=');
         if (equalSignIndex != std::string::npos) {
-            option.Name = segment.substr(dashCount, equalSignIndex - dashCount);
-            option.Value = segment.substr(equalSignIndex + 1, segment.length());
+            option.name = segment.substr(dashCount, equalSignIndex - dashCount);
+            option.value = segment.substr(equalSignIndex + 1, segment.length());
         } else {
-            option.Name = segment.substr(dashCount, segment.length());
+            option.name = segment.substr(dashCount, segment.length());
         }
-        const Option* definedOption = findOption(option.Name, Options);
+        const Option* definedOption = findOption(option.name, options);
         if (definedOption == nullptr && command != nullptr) {
-            definedOption = findOption(option.Name, command->Options);
+            definedOption = findOption(option.name, command->options);
         }
         if (definedOption == nullptr) {
             std::stringstream ss;
             ss << "Option provided but not defined: " << segment;
             throw std::runtime_error(ss.str());
         }
-        option.Name = definedOption->Name;
-        option.Usage = definedOption->Usage;
-        option.Aliases = definedOption->Aliases;
+        option.name = definedOption->name;
+        option.usage = definedOption->usage;
+        option.aliases = definedOption->aliases;
         return option;
     }
 
-    const Option* App::findOption(std::string_view name, const std::vector<Option>& flags) const {
+    const Option* App::findOption(std::string name, const std::vector<Option>& flags) const {
         for (const Option& option: flags) {
-            if (name == option.Name) {
+            if (name == option.name) {
                 return &option;
             }
-            for (std::string_view alias: option.Aliases) {
+            for (std::string alias: option.aliases) {
                 if (name == alias) {
                     return &option;
                 }
@@ -116,12 +132,12 @@ namespace CLI {
         return nullptr;
     }
 
-    const Command* App::findCommand(std::string_view segment) const {
-        for (const Command& command: Commands) {
-            if (segment == command.Name) {
+    const Command* App::findCommand(std::string segment) const {
+        for (const Command& command: commands) {
+            if (segment == command.name) {
                 return &command;
             }
-            for (std::string_view commandAlias: command.Aliases) {
+            for (std::string commandAlias: command.aliases) {
                 if (segment == commandAlias) {
                     return &command;
                 }
